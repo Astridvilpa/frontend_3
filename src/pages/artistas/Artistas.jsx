@@ -1,9 +1,10 @@
 import React from 'react';
 import { Navbar, Container, Nav, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import "./Artista.css"
+import './Artista.css';
 
 const Artistas = () => {
+ 
   const artistas = [
     {
       nombre: 'Katherine von Drachenberg',
@@ -21,15 +22,16 @@ const Artistas = () => {
       resena: 'Experto en tatuajes geométricos y minimalistas.',
     },
     {
-      nombre: 'Yoshihito Nakano',
-      imagen: './img/yoshi.jpg',
-      resena: 'Experto en tatuajes blanco y negro.',
-    },
-    {
-      nombre: 'Brian Woo',
-      imagen: './img/brian.jpg',
-      resena: 'Experto en la colocación de piercings y dilatadores.',
-    },
+        nombre: 'Yoshihito Nakano',
+        imagen: './img/yoshi.jpg',
+        resena: 'Experto en tatuajes blanco y negro.',
+      },
+      {
+        nombre: 'Brian Woo',
+        imagen: './img/brian.jpg',
+        resena: 'Experto enla colocación de piercings y dilatadores.',
+      },
+   
   ];
 
   return (
@@ -40,12 +42,10 @@ const Artistas = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link as={Link} to="/">Home</Nav.Link>
+              <Nav.Link as={Link} to="/home">Home</Nav.Link>
               <Nav.Link as={Link} to="/register">Register</Nav.Link>
               <Nav.Link as={Link} to="/galeria">Galeria</Nav.Link>
               <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
-              <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
-              <Nav.Link as={Link} to="/admin">Admin</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

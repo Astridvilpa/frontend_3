@@ -1,12 +1,12 @@
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
 import "./Estudio.css"; 
 
 const Estudio = () => {
   React.useEffect(() => {
     document.body.classList.add('estudio-body');
-
     
     return () => {
       document.body.classList.remove('estudio-body');
