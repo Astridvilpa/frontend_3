@@ -7,26 +7,22 @@ import { CustomInput } from "../../components/custom_input/CustomInput";
 
 // Componente de perfil de usuario
 export default function UserProfile({ isAdmin }) {
-  // Estados para almacenar los datos del perfil, email, estado de edición y token
   const [profileData, setProfileData] = useState(null);
   const [email, setEmail] = useState("");
   const [editing, setEditing] = useState(false);
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
-  // useEffect para cargar el perfil del usuario cuando el componente se monta
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem("userToken"));
     const token = userToken?.token;
     setToken(token);
 
-    // Si no hay token, redirigir al usuario a la página de login
     if (!token) {
       navigate("/login");
       return;
     }
 
-    // Función para obtener el perfil del usuario
     const getProfileHandler = async (token) => {
       try {
         const response = await getProfile(token);
@@ -44,13 +40,11 @@ export default function UserProfile({ isAdmin }) {
       }
     };
 
-    // Llamar a la función para obtener el perfil del usuario si el token está presente y no está en modo de edición
     if (token && !editing) {
       getProfileHandler(token);
     }
   }, [editing, token, navigate]);
 
-  // Manejador de cambios en los inputs de edición
   const editInputHandler = (e) => {
     const { name, value } = e.target;
 
@@ -66,7 +60,6 @@ export default function UserProfile({ isAdmin }) {
     console.log(`${name}: ${value}`);
   };
 
-  // Función para enviar los cambios del perfil
   const submitChanges = async () => {
     try {
       const response = await updateProfile(profileData, token);
@@ -80,14 +73,32 @@ export default function UserProfile({ isAdmin }) {
     }
   };
 
-  // Mostrar mensaje de carga si los datos del perfil aún no están disponibles
   if (!profileData) {
     return <div>Loading....</div>;
   }
 
+  const navLinksUser = (
+    <>
+      <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
+      <Nav.Link as={Link} to="/appointments">Citas</Nav.Link>
+      <Nav.Link as={Link} to="/new-appointment">Nueva Cita</Nav.Link>
+      <Nav.Link as={Link} to="/services">Ver Servicios</Nav.Link>
+      <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
+      <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
+    </>
+  );
+
+  const navLinksAdmin = (
+    <>
+      <Nav.Link as={Link} to="/all-users">Ver Todos los Usuarios</Nav.Link>
+      <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link>
+      <Nav.Link as={Link} to="/services">Ver Servicios</Nav.Link>
+      <Nav.Link as={Link} to="/artistas">Ver Artistas</Nav.Link>
+    </>
+  );
+
   return (
     <div className="profile-body">
-      {/* Barra de navegación */}
       <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
         <Container>
           <Navbar.Brand as={Link} to="/">
@@ -96,18 +107,8 @@ export default function UserProfile({ isAdmin }) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              {isAdmin && (
-                <Nav.Link as={Link} to="/admin-dashboard">
-                  Admin Dashboard
-                </Nav.Link>
-              )}
+              {profileData.role?.name === "super_admin" ? navLinksAdmin : navLinksUser}
               <NavDropdown title="Account" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#modify-profile">
-                  Appointments
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#new-appointment">
-                  New Appointments
-                </NavDropdown.Item>
                 <NavDropdown.Item
                   onClick={() => {
                     localStorage.removeItem("userToken");
@@ -122,7 +123,6 @@ export default function UserProfile({ isAdmin }) {
         </Container>
       </Navbar>
 
-      {/* Contenido del perfil */}
       <div className="profile-container">
         <div className="profile-content">
           <p>Bienvenido</p>

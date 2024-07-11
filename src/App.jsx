@@ -8,6 +8,7 @@ import Artistas from './pages/artistas/Artistas'
 import Galeria from './pages/galeria/Galeria'
 import Register from './pages/register/Register'
 import Profile  from './pages/profile/Profile'
+import Admin from './pages/admin/Admin'
 
 
 
@@ -22,6 +23,7 @@ function App() {
     <Route  path='galeria' element= {<Galeria />} />
     <Route path='register' element= {<Register />} />
     <Route path= 'profile' element= {<Profile />} />
+    <Route path='admin' element= {<Admin />} />
    
     
     </Routes>

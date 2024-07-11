@@ -57,7 +57,7 @@ export default function Login() {
   
           // Redirige basado en el rol del usuario
           if (decoded.userRoleName === "super_admin") {
-            navigate("/Artistas");
+            navigate("/Admin");
           } else if (decoded.userRoleName === "user") {
             navigate("/Profile");
           } else {
