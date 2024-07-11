@@ -59,7 +59,7 @@ export default function Login() {
           if (decoded.userRoleName === "super_admin") {
             navigate("/Artistas");
           } else if (decoded.userRoleName === "user") {
-            navigate("/Galeria");
+            navigate("/");
           } else {
             setErrorMsg("Rol de usuario desconocido");
           }

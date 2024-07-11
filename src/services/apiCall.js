@@ -25,3 +25,22 @@ export const login = async (credentials) => {
       throw error; // Lanza el error para que sea capturado en loginHandler
     }
   };
+
+
+  export const register = async (registerData) => {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerData),
+    };
+  
+    try {
+      const response = await fetch(`${BASE_URL}auth/register`, options);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error, "No Registrado");
+    }
+  };
