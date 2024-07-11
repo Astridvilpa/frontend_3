@@ -7,6 +7,7 @@ import Login from './pages/login/Login'
 import Artistas from './pages/artistas/Artistas'
 import Galeria from './pages/galeria/Galeria'
 import Register from './pages/register/Register'
+import Profile  from './pages/profile/Profile'
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
     <Route path='artistas' element= {<Artistas />} />
     <Route  path='galeria' element= {<Galeria />} />
     <Route path='register' element= {<Register />} />
+    <Route path= 'profile' element= {<Profile />} />
     
     </Routes>
       
