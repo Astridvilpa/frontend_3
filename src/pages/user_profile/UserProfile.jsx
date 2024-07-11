@@ -196,7 +196,7 @@ export default function UserProfile({ isAdmin }) {
                   <BsFillTrash3Fill className="ms-2" onClick={() => handleDeleteUserClick(user.id)} />
                 </Card.Title>
                 <Card.Text>ID: {user.id}</Card.Text>
-                {/* <Card.Text>Rol: {user.role?.name || "No asignado"}</Card.Text> */}
+                <Card.Text>Rol: {user.role?.name || "No asignado"}</Card.Text>
                 <Card.Subtitle className="mb-2 text-muted">{user.email}</Card.Subtitle>
                 {editingUser === user.id && (
                   <Form onSubmit={handleEditUserSubmit}>
