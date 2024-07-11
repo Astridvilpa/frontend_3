@@ -1,0 +1,92 @@
+.login-body {
+    font-family: Arial, sans-serif;
+    background-image: url(/img/plantilla-tarjeta-presentacion-estudio-tatuajes-psd-D_NQ_NP_993280-MLM27618528520_062018-F.jpg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }
+  
+  .login-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+    filter: blur(8px); 
+    opacity: 0.3; 
+    z-index: -1; 
+  }
+  
+  .login-container {
+    background-color: rgba(199, 201, 134, 0.411);
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px; 
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    color: rgb(9, 25, 13);
+    font-size: 24px;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-form h2 {
+    margin-bottom: 20px;
+  }
+  
+  .login-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #ab6422;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-btn:hover {
+    background-color: #6f6b56;
+  }
+  
+  .login-msg {
+    margin-top: 10px;
+    color: #dc3545; 
+    font-size: 14px;
+  }
+  
+  .home-link {
+    margin-top: 20px;
+    text-decoration: none;
+    color: #007bff; 
+    font-size: 14px;
+  }
+  
+  .home-link:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    .login-container {
+      padding: 10px;
+    }
+    
+    .login-btn {
+      width: 100%;
+    }
+  }
+
+  .error-msg {
+    color: red;
+    margin-top: 10px;
+  }
