@@ -10,6 +10,7 @@ import Register from './pages/register/Register'
 import Profile  from './pages/profile/Profile'
 
 
+
 function App() {
 
 
@@ -21,6 +22,7 @@ function App() {
     <Route  path='galeria' element= {<Galeria />} />
     <Route path='register' element= {<Register />} />
     <Route path= 'profile' element= {<Profile />} />
+   
     
     </Routes>
       
