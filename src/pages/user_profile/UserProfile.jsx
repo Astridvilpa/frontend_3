@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navbar, Container, Nav, Form, Row, Col, Card, Button, Alert, NavDropdown } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from "react-router-dom";
 import { getProfile, updateProfile, getAllUsers, updateUserById, deleteUserById } from "../../services/userCall";
 import { createAppointment } from "../../services/appointment";
@@ -178,8 +179,8 @@ export default function UserProfile({ isAdmin }) {
 
   const navLinksUser = (
     <>
-      <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link>
-      <Nav.Link as={Link} to="/appointments">Citas</Nav.Link>
+      {/* <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link> */}
+      {/* <Nav.Link as={Link} to="/appointments">Citas</Nav.Link> */}
       <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
       <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
       <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
@@ -188,9 +189,9 @@ export default function UserProfile({ isAdmin }) {
 
   const navLinksAdmin = (
     <>
-      <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link>
-      <Nav.Link onClick={() => { setShowUsers(true); navigate("/admin"); }}>Ver Todos los Usuarios</Nav.Link>
-      <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link>
+      {/* <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link> */}
+      <Nav.Link onClick={() => { setShowUsers(true); navigate("/admin"); }}>Usuarios</Nav.Link>
+      {/* <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link> */}
       <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
       <Nav.Link as={Link} to="/artistas">Ver Artistas</Nav.Link>
     </>
@@ -269,7 +270,7 @@ export default function UserProfile({ isAdmin }) {
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
           <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); }}>
-            Título del Sitio
+            Tattoo Studio
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
@@ -280,6 +281,7 @@ export default function UserProfile({ isAdmin }) {
               <NavDropdown title={profileData.first_name} id="collasible-nav-dropdown">
                 <NavDropdown.Item onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => { setShowCreateForm(true); setEditing(false); }}>Crear Cita</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { setShowCreateForm(true); setEditing(false); }}>Cita</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar Sesion</NavDropdown.Item>
               </NavDropdown>

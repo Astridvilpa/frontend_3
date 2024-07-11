@@ -1,0 +1,143 @@
+/* Estilo global del cuerpo específico de UserProfile */
+.user-profile-body {
+    background-color: #e1d9d9;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  /* Contenedor principal */
+  .user-profile-container {
+    margin-top: 20px;
+  }
+  
+  /* Barra de navegación */
+  .user-profile-navbar .navbar {
+    background-color: #333;
+  }
+  
+  .user-profile-navbar .navbar-brand {
+    color: #ff4b5c !important;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .user-profile-navbar .navbar-nav .nav-link {
+    color: #ff4b5c !important;
+  }
+  
+  .user-profile-navbar .navbar-nav .nav-link:hover {
+    color: #fff !important;
+  }
+  
+  .user-profile-navbar .navbar-collapse {
+    justify-content: flex-end;
+  }
+  
+  /* Título de la página */
+  .user-profile-container h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+  }
+  
+  /* Estilos del formulario */
+  .user-profile-container .form-control {
+    border-radius: 0;
+    border-color: #ddd;
+    margin-bottom: 15px;
+  }
+  
+  .user-profile-container .form-label {
+    font-weight: bold;
+  }
+  
+  .user-profile-container .btn-primary {
+    background-color: #ff4b5c;
+    border-color: #ff4b5c;
+    border-radius: 0;
+  }
+  
+  .user-profile-container .btn-primary:hover {
+    background-color: #e0434f;
+    border-color: #e0434f;
+  }
+  
+  /* Estilo de las tarjetas */
+  .user-profile-container .card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .user-profile-container .card-body {
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .user-profile-container .card-title {
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .user-profile-container .card-text {
+    margin-bottom: 15px;
+  }
+  
+  .user-profile-container .text-muted {
+    font-size: 0.875rem;
+  }
+  
+  /* Iconos de edición y eliminación */
+  .user-profile-container .ms-2 {
+    margin-left: 0.5rem !important;
+    cursor: pointer;
+    color: #ff4b5c;
+  }
+  
+  .user-profile-container .ms-2:hover {
+    color: #e0434f;
+  }
+  
+  /* Alertas */
+  .user-profile-container .alert {
+    border-radius: 0;
+  }
+  
+  /* Estilos adicionales */
+  .user-profile-container .my-4 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .user-profile-container .mb-4 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  @media (max-width: 768px) {
+    .user-profile-navbar .navbar-collapse {
+      justify-content: flex-start;
+    }
+  
+    .user-profile-container {
+      padding: 10px;
+    }
+  
+    .user-profile-container h1 {
+      font-size: 1.5rem;
+    }
+  
+    .user-profile-container .form-control, 
+    .user-profile-container .btn-primary {
+      font-size: 0.875rem;
+    }
+  
+    .user-profile-container .card-title {
+      font-size: 1rem;
+    }
+  
+    .user-profile-container .text-muted {
+      font-size: 0.75rem;
+    }
+  }
