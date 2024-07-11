@@ -19,6 +19,9 @@ export const getProfile = async (token) => {
   }
 };
 
+
+
+
 export const updateProfile = async (data, token) => {
   console.log(data, token, "somos data y token en updateProfile");
   const options = {
@@ -40,3 +43,6 @@ export const updateProfile = async (data, token) => {
     return error.message;
   }
 };
+
+
+

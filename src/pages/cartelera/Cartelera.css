@@ -1,0 +1,99 @@
+.admin-design {
+    margin-top: 20px;
+  }
+  
+  .welcome-text {
+    text-align: center;
+    margin: 40px 0;
+  }
+  
+  .welcome-text h1 {
+    font-size: 2.5em;
+    color: #333;
+  }
+  
+  .welcome-text img {
+    width: 100%;
+    max-width: 400px;
+    margin-top: 20px;
+  }
+  
+  h2 {
+    margin-top: 20px;
+    color: #555;
+  }
+  
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .card-title svg {
+    cursor: pointer;
+    color: #007bff;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .card-title svg:hover {
+    color: #0056b3;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form-control {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  button {
+    border-radius: 4px;
+    border: none;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .alert {
+    margin-top: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .welcome-text h1 {
+      font-size: 2em;
+    }
+  
+    .card {
+      margin-bottom: 20px;
+    }
+  }

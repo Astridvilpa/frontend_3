@@ -82,7 +82,7 @@ export default function UserProfile({ isAdmin }) {
       <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
       <Nav.Link as={Link} to="/appointments">Citas</Nav.Link>
       <Nav.Link as={Link} to="/new-appointment">Nueva Cita</Nav.Link>
-      <Nav.Link as={Link} to="/services">Ver Servicios</Nav.Link>
+      <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
       <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
       <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
     </>
@@ -92,7 +92,7 @@ export default function UserProfile({ isAdmin }) {
     <>
       <Nav.Link as={Link} to="/all-users">Ver Todos los Usuarios</Nav.Link>
       <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link>
-      <Nav.Link as={Link} to="/services">Ver Servicios</Nav.Link>
+      <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
       <Nav.Link as={Link} to="/artistas">Ver Artistas</Nav.Link>
     </>
   );
