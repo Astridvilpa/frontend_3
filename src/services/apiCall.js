@@ -1,4 +1,4 @@
-const BASE_URL = "htt://localhost:/4000/api/";
+const BASE_URL = "http://localhost:4000/api/";
 
 export const login = async (credentials) => {
     const options = {
@@ -8,15 +8,20 @@ export const login = async (credentials) => {
       },
   
       body: JSON.stringify(credentials),
-    }
+    };
+
     try {
-      const response = await fetch(`${BASE_URL}/auth/login`, options)
-      const data = await response.json()
+      const response = await fetch(`${BASE_URL}/auth/login`, options);
       
-      return data.token
+      if (!response.ok) {
+        throw new Error('Error en la solicitud de login');
+      }
+
+      const data = await response.json();
+      
+      return data.token;
     } catch (error) {
-      console.log(error, "algo ha salido mal login")
-      
+      console.log(error, "algo ha salido mal login");
+      throw error; // Lanza el error para que sea capturado en loginHandler
     }
   };
-  

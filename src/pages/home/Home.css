@@ -1,53 +1,55 @@
-
 .body-home {
-    font-family: Arial, sans-serif;
-      background-image: url(/img/colage.jpg);
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh; 
-  }
-  
-  .login-home::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: inherit;
-    background-size: inherit;
-    background-position: inherit;
-    filter: blur(8px); 
-    opacity: 0.3; 
-    z-index: -1; 
-  }
-  
-  .welcome-container {
-    text-align: center;
-    margin-top: 150px; 
-  }
-  
+  font-family: Arial, sans-serif;
+  background-image: url(/img/colage.jpg);
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative; /* Añadido para asegurar que la posición sea relativa */
+  padding-top: 56px; /* Asegura que el contenido no se superponga con la navbar */
+}
+
+.navbar {
+  z-index: 1030; /* Asegura que la navbar esté por encima de otros elementos */
+}
+
+.login-home::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  filter: blur(8px); 
+  opacity: 0.3; 
+  z-index: -1; 
+}
+
+.welcome-container {
+  text-align: center;
+  margin-top: 60px; /* Ajustado para que el contenido no se superponga con la navbar */
+}
+
+.welcome-container h1 {
+  font-size: 3em;
+  color: #bdc013;
+  margin-bottom: 20px;
+}
+
+.welcome-container p {
+  font-size: 1.2em;
+  color: white;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
   .welcome-container h1 {
-    font-size: 3em;
-    color: #bdc013;
-    margin-bottom: 20px;
-  }
-  
-  .welcome-container p {
-    font-size: 1.2em;
-    color:white;
-    margin-bottom: 10px;
-  }
-  
-  @media (max-width: 768px) {
-    .welcome-container h1 {
       font-size: 2em;
-    }
-  
-    .welcome-container p {
-      font-size: 1em;
-    }
   }
+
+  .welcome-container p {
+      font-size: 1em;
+  }
+}
