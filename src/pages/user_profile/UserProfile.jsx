@@ -1,12 +1,11 @@
-import { Navbar, Container, Nav, NavDropdown, Form, Row, Col, Card, Button, Alert } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Navbar, Container, Nav, Form, Row, Col, Card, Button, Alert, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { getProfile, updateProfile, getAllUsers, updateUserById, deleteUserById } from "../../services/userCall";
+import { createAppointment } from "../../services/appointment";
 import "./UserProfile.css";
-import { CustomInput } from "../../components/custom_input/CustomInput";
 import { BsFillPencilFill, BsFillTrash3Fill } from "react-icons/bs";
 
-// Componente de perfil de usuario
 export default function UserProfile({ isAdmin }) {
   const [profileData, setProfileData] = useState(null);
   const [email, setEmail] = useState("");
@@ -20,6 +19,11 @@ export default function UserProfile({ isAdmin }) {
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ first_name: "", last_name: "", email: "" });
   const [error, setError] = useState(null);
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState(""); // Nuevo estado para la hora
+  const [serviceId, setServiceId] = useState("");
+  const [artistId, setArtistId] = useState("");
+  const [showCreateForm, setShowCreateForm] = useState(false); // Estado para mostrar/ocultar el formulario de creación de cita
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -146,15 +150,36 @@ export default function UserProfile({ isAdmin }) {
     }
   };
 
+  const handleCreateAppointment = async () => {
+    try {
+      const formData = {
+        appointment_date: appointmentDate + " " + appointmentTime, // Concatenar fecha y hora
+        user_id: profileData.id,
+        service_id: serviceId,
+        artist_id: artistId,
+      };
+
+      const response = await createAppointment(formData, token);
+      if (response.success) {
+        console.log("Cita creada exitosamente:", response.message);
+        // Aquí podrías redirigir o mostrar un mensaje de éxito
+      } else {
+        console.error("Error al crear la cita:", response.message);
+        // Manejar el error o mostrar un mensaje al usuario
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
+  };
+
   if (!profileData) {
     return <div>Loading....</div>;
   }
 
   const navLinksUser = (
     <>
-      <Nav.Link as={Link} to="/profile" onClick={() => setShowUsers(false)}>Perfil</Nav.Link>
+      <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link>
       <Nav.Link as={Link} to="/appointments">Citas</Nav.Link>
-      <Nav.Link as={Link} to="/new-appointment">Nueva Cita</Nav.Link>
       <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
       <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
       <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
@@ -163,7 +188,7 @@ export default function UserProfile({ isAdmin }) {
 
   const navLinksAdmin = (
     <>
-      <Nav.Link as={Link} to="/profile" onClick={() => setShowUsers(false)}>Perfil</Nav.Link>
+      <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link>
       <Nav.Link onClick={() => { setShowUsers(true); navigate("/admin"); }}>Ver Todos los Usuarios</Nav.Link>
       <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link>
       <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
@@ -196,7 +221,6 @@ export default function UserProfile({ isAdmin }) {
                   <BsFillTrash3Fill className="ms-2" onClick={() => handleDeleteUserClick(user.id)} />
                 </Card.Title>
                 <Card.Text>ID: {user.id}</Card.Text>
-                <Card.Text>Rol: {user.role?.name || "No asignado"}</Card.Text>
                 <Card.Subtitle className="mb-2 text-muted">{user.email}</Card.Subtitle>
                 {editingUser === user.id && (
                   <Form onSubmit={handleEditUserSubmit}>
@@ -228,7 +252,7 @@ export default function UserProfile({ isAdmin }) {
                       />
                     </Form.Group>
                     <Button variant="primary" type="submit">
-                      Guardar
+                      Guardar Cambios
                     </Button>
                   </Form>
                 )}
@@ -241,69 +265,98 @@ export default function UserProfile({ isAdmin }) {
   );
 
   return (
-    <div className="profile-body">
-      <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
+    <div>
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand as={Link} to="/">Tattoo Studio</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              {profileData.role?.name === "super_admin" ? navLinksAdmin : navLinksUser}
-              <NavDropdown title="Account" id="basic-nav-dropdown">
-                <NavDropdown.Item
-                  onClick={() => {
-                    localStorage.removeItem("userToken");
-                    window.location.href = "/";
-                  }}
-                >
-                  Cerrar sesión
-                </NavDropdown.Item>
+          <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); }}>
+            Título del Sitio
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              {isAdmin ? navLinksAdmin : navLinksUser}
+            </Nav>
+            <Nav>
+              <NavDropdown title={profileData.first_name} id="collasible-nav-dropdown">
+                <NavDropdown.Item onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { setShowCreateForm(true); setEditing(false); }}>Crear Cita</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar Sesion</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      <div className="profile-container">
-        <div className="profile-content">
-          {!showUsers && (
-            <>
-              <p>Bienvenido</p>
-              <p>{profileData.role?.name || "Sin rol"}</p>
-              <CustomInput
-                type="text"
-                name="first_name"
-                value={profileData.first_name || ""}
-                handler={editInputHandler}
-                isDisabled={!editing}
+      <Container className="my-4">
+        {error && <Alert variant="danger">{error}</Alert>}
+        {editing ? (
+          <Form onSubmit={(e) => { e.preventDefault(); submitChanges(); }}>
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formFirstName">
+                <Form.Label>Nombre</Form.Label>
+                <Form.Control 
+                  type="text" 
+                  name="first_name" 
+                  value={profileData.first_name} 
+                  onChange={editInputHandler} 
+                />
+              </Form.Group>
+              <Form.Group as={Col} controlId="formLastName">
+                <Form.Label>Apellido</Form.Label>
+                <Form.Control 
+                  type="text" 
+                  name="last_name" 
+                  value={profileData.last_name} 
+                  onChange={editInputHandler} 
+                />
+              </Form.Group>
+            </Row>
+            <Form.Group controlId="formEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control 
+                type="email" 
+                name="email" 
+                value={email} 
+                onChange={editInputHandler} 
               />
-              <CustomInput
-                type="text"
-                name="last_name"
-                value={profileData.last_name || ""}
-                handler={editInputHandler}
-                isDisabled={!editing}
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Guardar Cambios
+            </Button>
+          </Form>
+        ) : showUsers ? filteredUserList : (
+          <Row className="justify-content-center">
+            <h1>Bienvenido, {profileData.first_name}!</h1>
+          </Row>
+        )}
+
+        {/* Formulario para crear una cita */}
+        {showCreateForm && (
+          <Form className="my-4">
+            <Form.Group controlId="appointmentDate">
+              <Form.Label>Fecha de la cita</Form.Label>
+              <Form.Control 
+                type="date" 
+                value={appointmentDate} 
+                onChange={(e) => setAppointmentDate(e.target.value)} 
               />
-              <CustomInput
-                type="email"
-                name="email"
-                value={email}
-                handler={editInputHandler}
-                isDisabled={!editing}
+            </Form.Group>
+            <Form.Group controlId="appointmentTime">
+              <Form.Label>Hora de la cita</Form.Label>
+              <Form.Control 
+                type="time" 
+                value={appointmentTime} 
+                onChange={(e) => setAppointmentTime(e.target.value)} 
               />
-              {editing ? (
-                <>
-                  <button onClick={() => setEditing(false)}>Descartar</button>
-                  <button onClick={submitChanges}>Guardar</button>
-                </>
-              ) : (
-                <button onClick={() => setEditing(true)}>Editar</button>
-              )}
-            </>
-          )}
-          {profileData.role?.name === "super_admin" && showUsers && filteredUserList}
-        </div>
-      </div>
+            </Form.Group>
+            {/* Más campos del formulario de cita, como serviceId, artistId, etc. */}
+            <Button variant="primary" onClick={handleCreateAppointment}>
+              Crear Cita
+            </Button>
+          </Form>
+        )}
+      </Container>
     </div>
   );
 }

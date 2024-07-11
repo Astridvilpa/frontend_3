@@ -12,6 +12,8 @@ import Admin from "./pages/admin/Admin";
 import Cartelera from "./pages/cartelera/Cartelera";
 import Estudio from "./pages/estudio/Estudio"
 
+
+
 function App() {
   return (
     <Routes>
@@ -24,6 +26,8 @@ function App() {
       <Route path="admin" element={<Admin />} />
       <Route path="cartelera" element={<Cartelera />} />
       <Route path="estudio" element={<Estudio />} />
+     
+     
     </Routes>
   );
 }
