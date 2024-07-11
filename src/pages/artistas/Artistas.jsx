@@ -44,6 +44,8 @@ const Artistas = () => {
               <Nav.Link as={Link} to="/register">Register</Nav.Link>
               <Nav.Link as={Link} to="/galeria">Galeria</Nav.Link>
               <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
+              <Nav.Link as={Link} to="/profile">Perfil</Nav.Link>
+              <Nav.Link as={Link} to="/admin">Admin</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
