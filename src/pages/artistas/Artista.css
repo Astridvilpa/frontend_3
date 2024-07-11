@@ -1,0 +1,52 @@
+.artistas-body {
+  background-color: #ddcccc;
+  color: #343a40;
+  min-height: 100vh;
+  padding-top: 100px; 
+  font-family: 'Arial', sans-serif;
+}
+
+.artistas-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.artistas-content h1 {
+  font-size: 3rem;
+  margin-bottom: 30px;
+}
+
+.artista-card {
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.artista-card img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.artista-card .card-body {
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.artista-card .card-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #343a40;
+}
+
+.artista-card .card-text {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .artista-card {
+    width: calc(100% - 40px);
+  }
+}

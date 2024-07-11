@@ -44,7 +44,6 @@ export default function Login() {
       console.log(decoded, "soy info");
 
 
-
   
         // Si el inicio de sesión es exitoso
         if (token) {
@@ -58,9 +57,9 @@ export default function Login() {
   
           // Redirige basado en el rol del usuario
           if (decoded.userRoleName === "super_admin") {
-            navigate("/admin-dashboard");
+            navigate("/Artistas");
           } else if (decoded.userRoleName === "user") {
-            navigate("/profile");
+            navigate("/Galeria");
           } else {
             setErrorMsg("Rol de usuario desconocido");
           }
