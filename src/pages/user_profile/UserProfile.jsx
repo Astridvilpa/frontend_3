@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Container, Nav, Form, Row, Col, Card, Button, Alert, NavDropdown } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Nav, Form, Row, Col, Card, Button, Alert, Navbar, NavDropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { getProfile, updateProfile, getAllUsers, updateUserById, deleteUserById } from "../../services/userCall";
 import { createArtist, getAllArtists, updateArtistById, deleteArtistById } from "../../services/artistCall";
-import "./UserProfile.css";
+import { getUserAppointments, createAppointment, updateAppointmentById, deleteAppointmentById } from "../../services/appointment";
+import { getAllServices } from "../../services/serviceCall";
 import { BsFillPencilFill, BsFillTrash3Fill } from "react-icons/bs";
+import Appointments from "../appointments/Appointments";
+import "./UserProfile.css";
 
 export default function UserProfile({ isAdmin }) {
   const [profileData, setProfileData] = useState(null);
@@ -14,10 +16,12 @@ export default function UserProfile({ isAdmin }) {
   const [token, setToken] = useState("");
   const [users, setUsers] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [services, setServices] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const [showUsers, setShowUsers] = useState(false);
   const [showArtists, setShowArtists] = useState(false);
+  const [showAppointments, setShowAppointments] = useState(false);
   const [noUsersMessage, setNoUsersMessage] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ first_name: "", last_name: "", email: "" });
@@ -25,11 +29,15 @@ export default function UserProfile({ isAdmin }) {
   const [error, setError] = useState(null);
   const [showArtistForm, setShowArtistForm] = useState(false);
   const [editingArtist, setEditingArtist] = useState(null);
+  const [userAppointments, setUserAppointments] = useState([]);
+  const [newAppointment, setNewAppointment] = useState({ appointment_date: "", service_id: "", artist_id: "" });
+  const [editingAppointment, setEditingAppointment] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem("userToken"));
     const token = userToken?.token;
+    const userId = userToken?.userId;
     setToken(token);
 
     if (!token) {
@@ -83,11 +91,44 @@ export default function UserProfile({ isAdmin }) {
       }
     };
 
+    const fetchServices = async () => {
+      try {
+        const response = await getAllServices(token);
+        if (response.success && Array.isArray(response.data)) {
+          setServices(response.data);
+        } else {
+          console.error("Expected array of services, received:", response);
+          setError("Error al obtener servicios: respuesta inesperada.");
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(`Error al obtener servicios: ${err.message}`);
+      }
+    };
+
+    const fetchUserAppointments = async () => {
+      try {
+        const response = await getUserAppointments(userId, token);
+        if (response.success) {
+          setUserAppointments(response.data);
+        } else {
+          setError("Error al obtener citas del usuario.");
+        }
+      } catch (err) {
+        setError("Error al obtener citas del usuario.");
+      }
+    };
+
     if (token) {
       getProfileHandler(token);
+      fetchUserAppointments();
       if (isAdmin) {
         fetchUsers();
         fetchArtists();
+        fetchServices();
+      } else {
+        fetchArtists();
+        fetchServices();
       }
     }
   }, [editing, token, navigate, isAdmin]);
@@ -227,6 +268,65 @@ export default function UserProfile({ isAdmin }) {
       }
     } catch (error) {
       console.error("Error al eliminar el artista:", error);
+    }
+  };
+
+  const handleCreateAppointment = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await createAppointment({ ...newAppointment, user_id: profileData.id }, token);
+      if (response.success) {
+        setUserAppointments([...userAppointments, response.appointment]);
+        setNewAppointment({ appointment_date: "", service_id: "", artist_id: "" });
+      } else {
+        setError("Error al crear la cita.");
+      }
+    } catch (error) {
+      setError("Error al crear la cita.");
+    }
+  };
+
+  const handleEditAppointmentClick = (appointment) => {
+    setEditingAppointment(appointment.id);
+    setNewAppointment({ 
+      appointment_date: appointment.appointment_date,
+      service_id: appointment.service_id || "",
+      artist_id: appointment.artist_id || ""
+    });
+  };
+
+  const handleEditAppointmentChange = (e) => {
+    setNewAppointment({ ...newAppointment, [e.target.name]: e.target.value || "" });
+  };
+
+  const handleEditAppointmentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateAppointmentById({ id: editingAppointment, ...newAppointment }, token);
+      if (response.success) {
+        const updatedAppointments = userAppointments.map(appointment =>
+          appointment.id === editingAppointment ? { ...appointment, ...newAppointment } : appointment
+        );
+        setUserAppointments(updatedAppointments);
+        setEditingAppointment(null);
+      } else {
+        setError("Error al actualizar la cita.");
+      }
+    } catch (error) {
+      setError("Error al actualizar la cita.");
+    }
+  };
+
+  const handleDeleteAppointmentClick = async (appointmentId) => {
+    try {
+      const response = await deleteAppointmentById(appointmentId, token);
+      if (response.success) {
+        setUserAppointments(userAppointments.filter(appointment => appointment.id !== appointmentId));
+      } else {
+        setError("Error al eliminar la cita.");
+      }
+    } catch (error) {
+      setError("Error al eliminar la cita.");
     }
   };
 
@@ -382,7 +482,7 @@ export default function UserProfile({ isAdmin }) {
     <div>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); setShowArtists(false); }}>
+          <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); setShowArtists(false); setShowAppointments(false); }}>
             Tattoo Studio
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -390,8 +490,9 @@ export default function UserProfile({ isAdmin }) {
             <Nav className="me-auto">
               {isAdmin ? (
                 <>
-                  <Nav.Link onClick={() => { setShowUsers(true); setShowArtists(false); navigate("/admin"); }}>Usuarios</Nav.Link>
-                  <Nav.Link onClick={() => { setShowArtists(true); setShowUsers(false); navigate("/admin"); }}>Artistas</Nav.Link>
+                  <Nav.Link onClick={() => { setShowUsers(true); setShowArtists(false); setShowAppointments(false); navigate("/admin"); }}>Usuarios</Nav.Link>
+                  <Nav.Link onClick={() => { setShowArtists(true); setShowUsers(false); setShowAppointments(false); navigate("/admin"); }}>Artistas</Nav.Link>
+                  <Nav.Link onClick={() => { setShowAppointments(true); setShowUsers(false); setShowArtists(false); navigate("/admin"); }}>Citas</Nav.Link> {/* Nueva opción de citas */}
                   <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
                 </>
               ) : (
@@ -399,6 +500,7 @@ export default function UserProfile({ isAdmin }) {
                   <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
                   <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
                   <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
+                  <Nav.Link onClick={() => { setShowAppointments(true); setShowUsers(false); setShowArtists(false); }}>Mis Citas</Nav.Link> {/* Nueva opción para usuarios */}
                 </>
               )}
             </Nav>
@@ -422,7 +524,7 @@ export default function UserProfile({ isAdmin }) {
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control 
                   type="text" 
-                  name="first_name" 
+                  name="first_name"
                   value={profileData.first_name} 
                   onChange={editInputHandler} 
                 />
@@ -431,7 +533,7 @@ export default function UserProfile({ isAdmin }) {
                 <Form.Label>Apellido</Form.Label>
                 <Form.Control 
                   type="text" 
-                  name="last_name" 
+                  name="last_name"
                   value={profileData.last_name} 
                   onChange={editInputHandler} 
                 />
@@ -450,7 +552,71 @@ export default function UserProfile({ isAdmin }) {
               Guardar Cambios
             </Button>
           </Form>
-        ) : showUsers ? filteredUserList : showArtists ? (isAdmin ? artistListAdmin : artistListUser) : (
+        ) : showUsers ? filteredUserList : showArtists ? (isAdmin ? artistListAdmin : artistListUser) : showAppointments ? (isAdmin ? <Appointments token={token} isAdmin={isAdmin} /> : (
+          <div>
+            <h3>Mis Citas</h3>
+            {userAppointments.map(appointment => (
+              <Card key={appointment.id} className="mb-4">
+                <Card.Body>
+                  <Card.Title>
+                    {new Date(appointment.appointment_date).toLocaleString()}
+                    <Button className="ms-2" onClick={() => handleEditAppointmentClick(appointment)}>Editar</Button>
+                    <Button className="ms-2" onClick={() => handleDeleteAppointmentClick(appointment.id)}>Eliminar</Button>
+                  </Card.Title>
+                  <Card.Text>
+                    Servicio: {appointment.service ? appointment.service.service_name : "No asignado"}
+                  </Card.Text>
+                  <Card.Text>
+                    Artista: {appointment.artist ? appointment.artist.name : "No asignado"}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+            <h3>Crear Nueva Cita</h3>
+            <Form onSubmit={handleCreateAppointment}>
+              <Form.Group controlId="formAppointmentDate">
+                <Form.Label>Fecha y Hora</Form.Label>
+                <Form.Control 
+                  type="datetime-local" 
+                  name="appointment_date"
+                  value={newAppointment.appointment_date}
+                  onChange={handleEditAppointmentChange} 
+                />
+              </Form.Group>
+              <Form.Group controlId="formServiceId">
+                <Form.Label>Servicio</Form.Label>
+                <Form.Control 
+                  as="select" 
+                  name="service_id"
+                  value={newAppointment.service_id}
+                  onChange={handleEditAppointmentChange}
+                >
+                  <option value="">Seleccionar Servicio</option>
+                  {services.map(service => (
+                    <option key={service.id} value={service.id}>{service.service_name}</option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group controlId="formArtistId">
+                <Form.Label>Artista</Form.Label>
+                <Form.Control 
+                  as="select" 
+                  name="artist_id"
+                  value={newAppointment.artist_id}
+                  onChange={handleEditAppointmentChange}
+                >
+                  <option value="">Seleccionar Artista</option>
+                  {artists.map(artist => (
+                    <option key={artist.id} value={artist.id}>{artist.name}</option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                {editingAppointment ? "Actualizar Cita" : "Crear Cita"}
+              </Button>
+            </Form>
+          </div>
+        )) : (
           <Row className="justify-content-center">
             <h1>Bienvenido, {profileData.first_name}!</h1>
           </Row>

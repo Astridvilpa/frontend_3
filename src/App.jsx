@@ -11,6 +11,7 @@ import Profile from "./pages/profile/Profile";
 import Admin from "./pages/admin/Admin";
 import Cartelera from "./pages/cartelera/Cartelera";
 import Estudio from "./pages/estudio/Estudio"
+import Citas from "./pages/appointments/Appointments"
 
 
 
@@ -26,7 +27,7 @@ function App() {
       <Route path="admin" element={<Admin />} />
       <Route path="cartelera" element={<Cartelera />} />
       <Route path="estudio" element={<Estudio />} />
-     
+     <Route path="citas" element={<Citas />} />
      
     </Routes>
   );
