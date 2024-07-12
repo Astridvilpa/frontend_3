@@ -121,7 +121,7 @@ export default function Cartelera() {
               <Navbar.Brand as={Link} to="/profile">Profile</Navbar.Brand>
               <NavDropdown title="Cuenta" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/cartelera">Ver servicios</NavDropdown.Item>
-                {userRole === "super_admin" && <NavDropdown.Item as={Link} to="/all-users">Ver usuarios</NavDropdown.Item>}
+                {userRole === "super_admin" && <NavDropdown.Item as={Link} to="/admin">Ver usuarios</NavDropdown.Item>}
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar sesión</NavDropdown.Item>
               </NavDropdown>
