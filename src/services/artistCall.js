@@ -11,7 +11,7 @@ export const createArtist = async (artistData, token) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}artist`, options);
+    const response = await fetch(`${BASE_URL}artists`, options);
     const responseData = await response.json();
     return responseData;
   } catch (error) {
@@ -30,7 +30,7 @@ export const getAllArtists = async (token) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}artist`, options);
+    const response = await fetch(`${BASE_URL}artists`, options);
     const data = await response.json();
     console.log(data);
     return data;
@@ -50,7 +50,7 @@ export const updateArtistById = async (data, token) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}artist/${data.id}`, options);
+    const response = await fetch(`${BASE_URL}artists/${data.id}`, options);
     const responseData = await response.json();
     console.log(responseData);
     return responseData;
@@ -70,7 +70,7 @@ export const deleteArtistById = async (id, token) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}artist/${id}`, options);
+    const response = await fetch(`${BASE_URL}artists/${id}`, options);
     const responseData = await response.json();
     return responseData;
   } catch (error) {

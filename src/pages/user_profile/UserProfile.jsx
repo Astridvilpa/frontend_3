@@ -3,7 +3,7 @@ import { Navbar, Container, Nav, Form, Row, Col, Card, Button, Alert, NavDropdow
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from "react-router-dom";
 import { getProfile, updateProfile, getAllUsers, updateUserById, deleteUserById } from "../../services/userCall";
-import { createAppointment } from "../../services/appointment";
+import { createArtist, getAllArtists, updateArtistById, deleteArtistById } from "../../services/artistCall";
 import "./UserProfile.css";
 import { BsFillPencilFill, BsFillTrash3Fill } from "react-icons/bs";
 
@@ -13,18 +13,18 @@ export default function UserProfile({ isAdmin }) {
   const [editing, setEditing] = useState(false);
   const [token, setToken] = useState("");
   const [users, setUsers] = useState([]);
+  const [artists, setArtists] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const [showUsers, setShowUsers] = useState(false);
+  const [showArtists, setShowArtists] = useState(false);
   const [noUsersMessage, setNoUsersMessage] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ first_name: "", last_name: "", email: "" });
+  const [editArtistForm, setEditArtistForm] = useState({ name: "", Bio: "", Specialty: "" });
   const [error, setError] = useState(null);
-  const [appointmentDate, setAppointmentDate] = useState("");
-  const [appointmentTime, setAppointmentTime] = useState(""); // Nuevo estado para la hora
-  const [serviceId, setServiceId] = useState("");
-  const [artistId, setArtistId] = useState("");
-  const [showCreateForm, setShowCreateForm] = useState(false); // Estado para mostrar/ocultar el formulario de creación de cita
+  const [showArtistForm, setShowArtistForm] = useState(false);
+  const [editingArtist, setEditingArtist] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,10 +68,26 @@ export default function UserProfile({ isAdmin }) {
       }
     };
 
+    const fetchArtists = async () => {
+      try {
+        const response = await getAllArtists(token);
+        if (response.success && Array.isArray(response.data)) {
+          setArtists(response.data);
+        } else {
+          console.error("Expected array of artists, received:", response);
+          setError("Error al obtener artistas: respuesta inesperada.");
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(`Error al obtener artistas: ${err.message}`);
+      }
+    };
+
     if (token) {
       getProfileHandler(token);
       if (isAdmin) {
         fetchUsers();
+        fetchArtists();
       }
     }
   }, [editing, token, navigate, isAdmin]);
@@ -151,51 +167,68 @@ export default function UserProfile({ isAdmin }) {
     }
   };
 
-  const handleCreateAppointment = async () => {
+  const handleCreateArtist = async () => {
     try {
-      const formData = {
-        appointment_date: appointmentDate + " " + appointmentTime, // Concatenar fecha y hora
-        user_id: profileData.id,
-        service_id: serviceId,
-        artist_id: artistId,
-      };
-
-      const response = await createAppointment(formData, token);
+      const response = await createArtist(editArtistForm, token);
       if (response.success) {
-        console.log("Cita creada exitosamente:", response.message);
-        // Aquí podrías redirigir o mostrar un mensaje de éxito
+        setArtists([...artists, response.data]);
+        setShowArtistForm(false);
+        setEditArtistForm({ name: "", Bio: "", Specialty: "" });
+        console.log("Artista creado exitosamente:", response.message);
       } else {
-        console.error("Error al crear la cita:", response.message);
-        // Manejar el error o mostrar un mensaje al usuario
+        console.error("Error al crear el artista:", response.message);
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
   };
 
-  if (!profileData) {
-    return <div>Loading....</div>;
-  }
+  const handleEditArtistClick = (artist) => {
+    if (editingArtist === artist.id) {
+      setEditingArtist(null);
+    } else {
+      setEditingArtist(artist.id);
+      setEditArtistForm({ name: artist.name, Bio: artist.Bio, Specialty: artist.Specialty });
+    }
+  };
 
-  const navLinksUser = (
-    <>
-      {/* <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link> */}
-      {/* <Nav.Link as={Link} to="/appointments">Citas</Nav.Link> */}
-      <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
-      <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
-      <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
-    </>
-  );
+  const handleEditArtistChange = (e) => {
+    setEditArtistForm({ ...editArtistForm, [e.target.name]: e.target.value });
+  };
 
-  const navLinksAdmin = (
-    <>
-      {/* <Nav.Link as={Link} to="/profile" onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</Nav.Link> */}
-      <Nav.Link onClick={() => { setShowUsers(true); navigate("/admin"); }}>Usuarios</Nav.Link>
-      {/* <Nav.Link as={Link} to="/appointments">Ver Citas</Nav.Link> */}
-      <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
-      <Nav.Link as={Link} to="/artistas">Ver Artistas</Nav.Link>
-    </>
-  );
+  const handleEditArtistSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateArtistById({ id: editingArtist, ...editArtistForm }, token);
+      if (response.success) {
+        const updatedArtists = artists.map(artist =>
+          artist.id === editingArtist ? { ...artist, ...editArtistForm } : artist
+        );
+        setArtists(updatedArtists);
+        setEditingArtist(null);
+        console.log("Artista actualizado con éxito:", response.message);
+      } else {
+        console.error("Error al actualizar el artista:", response.message);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el artista:", error);
+    }
+  };
+
+  const handleDeleteArtistClick = async (artistId) => {
+    try {
+      const response = await deleteArtistById(artistId, token);
+      if (response.success) {
+        const updatedArtists = artists.filter(artist => artist.id !== artistId);
+        setArtists(updatedArtists);
+        console.log("Artista eliminado con éxito:", response.message);
+      } else {
+        console.error("Error al eliminar el artista:", response.message);
+      }
+    } catch (error) {
+      console.error("Error al eliminar el artista:", error);
+    }
+  };
 
   const filteredUserList = (
     <div>
@@ -265,23 +298,113 @@ export default function UserProfile({ isAdmin }) {
     </div>
   );
 
+  const artistListAdmin = (
+    <div>
+      <Button variant="primary" className="my-4" onClick={() => setShowArtistForm(true)}>
+        Crear Artista
+      </Button>
+      <Row>
+        {artists.map((artist) => (
+          <Col key={artist.id} md={4} className="mb-4">
+            <Card>
+              <Card.Body>
+                <Card.Title>
+                  {artist.name}
+                  <BsFillPencilFill className="ms-2" onClick={() => handleEditArtistClick(artist)} />
+                  <BsFillTrash3Fill className="ms-2" onClick={() => handleDeleteArtistClick(artist.id)} />
+                </Card.Title>
+                <Card.Text>{artist.Bio}</Card.Text>
+                <Card.Subtitle className="mb-2 text-muted">{artist.Specialty}</Card.Subtitle>
+                {editingArtist === artist.id && (
+                  <Form onSubmit={handleEditArtistSubmit}>
+                    <Form.Group controlId="formName">
+                      <Form.Label>Nombre</Form.Label>
+                      <Form.Control 
+                        type="text" 
+                        name="name"
+                        value={editArtistForm.name}
+                        onChange={handleEditArtistChange} 
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="formBio">
+                      <Form.Label>Bio</Form.Label>
+                      <Form.Control 
+                        type="text" 
+                        name="Bio"
+                        value={editArtistForm.Bio}
+                        onChange={handleEditArtistChange} 
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="formSpecialty">
+                      <Form.Label>Especialidad</Form.Label>
+                      <Form.Control 
+                        type="text" 
+                        name="Specialty"
+                        value={editArtistForm.Specialty}
+                        onChange={handleEditArtistChange} 
+                      />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">
+                      Guardar Cambios
+                    </Button>
+                  </Form>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+
+  const artistListUser = (
+    <Row>
+      {artists.map((artist) => (
+        <Col key={artist.id} md={4} className="mb-4">
+          <Card>
+            <Card.Img variant="top" src={artist.imageUrl} /> {/* Asegúrate de tener imageUrl en los datos de artista */}
+            <Card.Body>
+              <Card.Title>{artist.name}</Card.Title>
+              <Card.Text>{artist.Bio}</Card.Text>
+              <Card.Subtitle className="mb-2 text-muted">{artist.Specialty}</Card.Subtitle>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
+
+  if (!profileData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); }}>
+          <Navbar.Brand as={Link} to="/" onClick={() => { setShowUsers(false); setEditing(false); setShowArtists(false); }}>
             Tattoo Studio
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              {isAdmin ? navLinksAdmin : navLinksUser}
+              {isAdmin ? (
+                <>
+                  <Nav.Link onClick={() => { setShowUsers(true); setShowArtists(false); navigate("/admin"); }}>Usuarios</Nav.Link>
+                  <Nav.Link onClick={() => { setShowArtists(true); setShowUsers(false); navigate("/admin"); }}>Artistas</Nav.Link>
+                  <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/cartelera">Ver Servicios</Nav.Link>
+                  <Nav.Link as={Link} to="/galeria">Galería</Nav.Link>
+                  <Nav.Link as={Link} to="/artistas">Artistas</Nav.Link>
+                </>
+              )}
             </Nav>
             <Nav>
               <NavDropdown title={profileData.first_name} id="collasible-nav-dropdown">
                 <NavDropdown.Item onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => { setShowCreateForm(true); setEditing(false); }}>Crear Cita</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => { setShowCreateForm(true); setEditing(false); }}>Cita</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar Sesion</NavDropdown.Item>
               </NavDropdown>
@@ -327,34 +450,44 @@ export default function UserProfile({ isAdmin }) {
               Guardar Cambios
             </Button>
           </Form>
-        ) : showUsers ? filteredUserList : (
+        ) : showUsers ? filteredUserList : showArtists ? (isAdmin ? artistListAdmin : artistListUser) : (
           <Row className="justify-content-center">
             <h1>Bienvenido, {profileData.first_name}!</h1>
           </Row>
         )}
 
-        {/* Formulario para crear una cita */}
-        {showCreateForm && (
+        {/* Formulario para crear un artista */}
+        {showArtistForm && (
           <Form className="my-4">
-            <Form.Group controlId="appointmentDate">
-              <Form.Label>Fecha de la cita</Form.Label>
+            <Form.Group controlId="formName">
+              <Form.Label>Nombre</Form.Label>
               <Form.Control 
-                type="date" 
-                value={appointmentDate} 
-                onChange={(e) => setAppointmentDate(e.target.value)} 
+                type="text" 
+                name="name"
+                value={editArtistForm.name}
+                onChange={handleEditArtistChange} 
               />
             </Form.Group>
-            <Form.Group controlId="appointmentTime">
-              <Form.Label>Hora de la cita</Form.Label>
+            <Form.Group controlId="formBio">
+              <Form.Label>Bio</Form.Label>
               <Form.Control 
-                type="time" 
-                value={appointmentTime} 
-                onChange={(e) => setAppointmentTime(e.target.value)} 
+                type="text" 
+                name="Bio"
+                value={editArtistForm.Bio}
+                onChange={handleEditArtistChange} 
               />
             </Form.Group>
-            {/* Más campos del formulario de cita, como serviceId, artistId, etc. */}
-            <Button variant="primary" onClick={handleCreateAppointment}>
-              Crear Cita
+            <Form.Group controlId="formSpecialty">
+              <Form.Label>Especialidad</Form.Label>
+              <Form.Control 
+                type="text" 
+                name="Specialty"
+                value={editArtistForm.Specialty}
+                onChange={handleEditArtistChange} 
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={handleCreateArtist}>
+              Crear Artista
             </Button>
           </Form>
         )}
