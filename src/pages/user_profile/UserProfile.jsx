@@ -22,7 +22,6 @@ export default function UserProfile({ isAdmin }) {
   const [showUsers, setShowUsers] = useState(false);
   const [showArtists, setShowArtists] = useState(false);
   const [showAppointments, setShowAppointments] = useState(false);
-  const [noUsersMessage, setNoUsersMessage] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ first_name: "", last_name: "", email: "" });
   const [editArtistForm, setEditArtistForm] = useState({ name: "", Bio: "", Specialty: "" });
@@ -45,7 +44,7 @@ export default function UserProfile({ isAdmin }) {
       return;
     }
 
-    const getProfileHandler = async (token) => {
+    const getProfileHandler = async () => {
       try {
         const response = await getProfile(token);
         if (response.success) {
@@ -120,15 +119,12 @@ export default function UserProfile({ isAdmin }) {
     };
 
     if (token) {
-      getProfileHandler(token);
+      getProfileHandler();
       fetchUserAppointments();
+      fetchArtists();
+      fetchServices();
       if (isAdmin) {
         fetchUsers();
-        fetchArtists();
-        fetchServices();
-      } else {
-        fetchArtists();
-        fetchServices();
       }
     }
   }, [editing, token, navigate, isAdmin]);
@@ -341,7 +337,6 @@ export default function UserProfile({ isAdmin }) {
           />
         </Form.Group>
       </Form>
-      {noUsersMessage && <Alert variant="info">{noUsersMessage}</Alert>}
       <Row>
         {filteredUsers.filter((user) =>
           user.email.toLowerCase().includes(filter.toLowerCase())
@@ -506,7 +501,7 @@ export default function UserProfile({ isAdmin }) {
             </Nav>
             <Nav>
               <NavDropdown title={profileData.first_name} id="collasible-nav-dropdown">
-                <NavDropdown.Item onClick={() => { setEditing(true); setShowCreateForm(false); }}>Editar Perfil</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { setEditing(true); }}>Editar Perfil</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar Sesion</NavDropdown.Item>
               </NavDropdown>
