@@ -14,7 +14,6 @@ import Estudio from "./pages/estudio/Estudio"
 import Citas from "./pages/appointments/Appointments"
 
 
-
 function App() {
   return (
     <Routes>
@@ -28,7 +27,9 @@ function App() {
       <Route path="cartelera" element={<Cartelera />} />
       <Route path="estudio" element={<Estudio />} />
      <Route path="citas" element={<Citas />} />
-     
+    
+
+
     </Routes>
   );
 }
