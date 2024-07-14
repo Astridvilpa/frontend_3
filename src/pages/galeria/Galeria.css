@@ -22,7 +22,7 @@
     font-size: 2rem;
     text-align: center;
     margin-bottom: 30px;
-    width: 100%; /* Añadir esto para centrar el título */
+    width: 100%; 
   }
   
   .galeria-card {

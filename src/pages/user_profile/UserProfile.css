@@ -1,16 +1,15 @@
-/* Estilo global del cuerpo específico de UserProfile */
 .user-profile-body {
     background-color: #e1d9d9;
     font-family: 'Arial', sans-serif;
     color: #333;
   }
   
-  /* Contenedor principal */
+
   .user-profile-container {
     margin-top: 20px;
   }
   
-  /* Barra de navegación */
+
   .user-profile-navbar .navbar {
     background-color: #333;
   }
@@ -33,14 +32,14 @@
     justify-content: flex-end;
   }
   
-  /* Título de la página */
+  
   .user-profile-container h1 {
     text-align: center;
     margin-top: 20px;
     color: #333;
   }
   
-  /* Estilos del formulario */
+ 
   .user-profile-container .form-control {
     border-radius: 0;
     border-color: #ddd;
@@ -62,7 +61,7 @@
     border-color: #e0434f;
   }
   
-  /* Estilo de las tarjetas */
+  
   .user-profile-container .card {
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -89,7 +88,7 @@
     font-size: 0.875rem;
   }
   
-  /* Iconos de edición y eliminación */
+  
   .user-profile-container .ms-2 {
     margin-left: 0.5rem !important;
     cursor: pointer;
@@ -100,12 +99,12 @@
     color: #e0434f;
   }
   
-  /* Alertas */
+ 
   .user-profile-container .alert {
     border-radius: 0;
   }
   
-  /* Estilos adicionales */
+  
   .user-profile-container .my-4 {
     margin-top: 1.5rem !important;
     margin-bottom: 1.5rem !important;

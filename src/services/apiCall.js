@@ -22,7 +22,7 @@ export const login = async (credentials) => {
       return data.token;
     } catch (error) {
       console.log(error, "algo ha salido mal login");
-      throw error; // Lanza el error para que sea capturado en loginHandler
+      throw error; 
     }
   };
 

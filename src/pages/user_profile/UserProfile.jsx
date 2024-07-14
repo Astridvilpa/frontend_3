@@ -412,7 +412,7 @@ export default function UserProfile({ isAdmin }) {
                   >
                     Citas
                   </Nav.Link>{" "}
-                  {/* Nueva opción de citas */}
+                  {}
                   <Nav.Link as={Link} to="/cartelera">
                     Ver Servicios
                   </Nav.Link>
@@ -647,7 +647,7 @@ export default function UserProfile({ isAdmin }) {
           </Row>
         )}
 
-        {/* Formulario para crear un artista */}
+        {}
         {showArtistForm && (
           <Form className="my-4">
             <Form.Group controlId="formName">

@@ -8,19 +8,19 @@ import { login } from "../../services/apiCall";
 
 
 export default function Login() {
-    // Estado para almacenar las credenciales del usuario
+    
     const [credentials, setCredentials] = useState({
       email: "",
       password: "",
     });
   
-    // Estado para almacenar mensajes de error
+   
     const [errorMsg, setErrorMsg] = useState("");
   
-    // Hook para navegar programáticamente
+    
     const navigate = useNavigate();
   
-    // Función para manejar cambios en los inputs y actualizar el estado de credentials
+    
     const inputHandler = (e) => {
       setCredentials({
         ...credentials,
@@ -28,16 +28,16 @@ export default function Login() {
       });
     };
   
-    // Función para manejar el proceso de inicio de sesión
+    
     const loginHandler = async () => {
-      // Verifica si ambos campos de correo y contraseña están llenos
+      
       if (credentials.email.trim() === "" || credentials.password.trim() === "") {
         setErrorMsg("Todos los campos son requeridos");
         return;
       }
   
       try {
-        // Intenta iniciar sesión con las credenciales proporcionadas
+       
         const token = await login(credentials);
         const decoded = jwtDecode(token);
         console.log(token, "mi token");
@@ -45,17 +45,17 @@ export default function Login() {
 
 
   
-        // Si el inicio de sesión es exitoso
+        
         if (token) {
           const userToken = {
             token: token,
             decoded: decoded,
           };
   
-          // Almacena el token y la información decodificada en el almacenamiento local
+          
           localStorage.setItem("userToken", JSON.stringify(userToken));
   
-          // Redirige basado en el rol del usuario
+        
           if (decoded.userRoleName === "super_admin") {
             navigate("/Admin");
           } else if (decoded.userRoleName === "user") {

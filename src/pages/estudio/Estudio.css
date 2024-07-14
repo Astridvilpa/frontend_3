@@ -1,16 +1,15 @@
-/* Estilo global para la vista del estudio */
 .estudio-body {
     background-color: #f5f5f5;
     color: #333;
     font-family: 'Arial', sans-serif;
   }
   
-  /* Contenedor principal de la vista */
+ 
   .studio-view {
-    padding-top: 70px; /* Espacio para el navbar fijo */
+    padding-top: 70px; 
   }
   
-  /* Estilo del contenido del estudio */
+  
   .studio-content {
     display: flex;
     flex-wrap: wrap;
@@ -21,7 +20,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Estilo del texto del estudio */
+  
   .studio-text {
     flex: 1;
     padding: 20px;
@@ -50,7 +49,7 @@
     margin-bottom: 10px;
   }
   
-  /* Estilo de la imagen del estudio */
+ 
   .studio-image {
     flex: 1;
     display: flex;
@@ -64,7 +63,7 @@
     border-radius: 10px;
   }
   
-  /* Estilos de media queries para responsive design */
+ 
   @media (max-width: 768px) {
     .studio-content {
       flex-direction: column;
