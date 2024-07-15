@@ -38,12 +38,12 @@ import UserList from "../../components/listas/UserList";
 import ArtistList from "../../components/listas/ArtistList";
 import AppointmentList from "../../components/listas/AppointmentList";
 import "./UserProfile.css";
+import { useAuth } from "../../contexts/auth-context/AuthContext"; 
 
 export default function UserProfile({ isAdmin }) {
   const [profileData, setProfileData] = useState(null);
   const [email, setEmail] = useState("");
   const [editing, setEditing] = useState(false);
-  const [token, setToken] = useState("");
   const [users, setUsers] = useState([]);
   const [artists, setArtists] = useState([]);
   const [services, setServices] = useState([]);
@@ -74,13 +74,11 @@ export default function UserProfile({ isAdmin }) {
   });
   const [editingAppointment, setEditingAppointment] = useState(null);
   const navigate = useNavigate();
+  const { userToken, logan, logout } = useAuth(); 
 
   useEffect(() => {
-    const userToken = JSON.parse(localStorage.getItem("userToken"));
     const token = userToken?.token;
     const userId = userToken?.decoded.userId;
-    console.log(userToken)
-    setToken(token);
 
     if (!token) {
       navigate("/login");
@@ -101,7 +99,6 @@ export default function UserProfile({ isAdmin }) {
           ]);
 
         if (profileRes.success) {
-          console.log("sOY SEBASTIAN",profileRes,appointmentsRes)
           setProfileData(profileRes.data);
           setEmail(profileRes.data.email);
         } else {
@@ -149,7 +146,7 @@ export default function UserProfile({ isAdmin }) {
     };
 
     fetchData();
-  }, [editing, token, navigate, isAdmin]);
+  }, [editing, userToken, navigate, isAdmin]);
 
   const editInputHandler = (e) => {
     const { name, value } = e.target;
@@ -159,7 +156,7 @@ export default function UserProfile({ isAdmin }) {
 
   const submitChanges = async () => {
     try {
-      const response = await updateProfile(profileData, token);
+      const response = await updateProfile(profileData, userToken.token);
       if (response.success) setEditing(false);
       else console.log("Error al guardar los datos:", response.error);
     } catch (error) {
@@ -184,7 +181,7 @@ export default function UserProfile({ isAdmin }) {
     try {
       const response = await updateUserById(
         { id: editingUser, ...editForm },
-        token
+        userToken.token
       );
       if (response.success) {
         const updatedUsers = users.map((user) =>
@@ -203,7 +200,7 @@ export default function UserProfile({ isAdmin }) {
 
   const handleDeleteUserClick = async (userId) => {
     try {
-      const response = await deleteUserById(userId, token);
+      const response = await deleteUserById(userId, userToken.token);
       if (response.success) {
         const updatedUsers = users.filter((user) => user.id !== userId);
         setUsers(updatedUsers);
@@ -218,7 +215,7 @@ export default function UserProfile({ isAdmin }) {
 
   const handleCreateArtist = async () => {
     try {
-      const response = await createArtist(editArtistForm, token);
+      const response = await createArtist(editArtistForm, userToken.token);
       if (response.success) {
         setArtists([...artists, response.data]);
         setShowArtistForm(false);
@@ -248,7 +245,7 @@ export default function UserProfile({ isAdmin }) {
     try {
       const response = await updateArtistById(
         { id: editingArtist, ...editArtistForm },
-        token
+        userToken.token
       );
       if (response.success) {
         const updatedArtists = artists.map((artist) =>
@@ -268,7 +265,7 @@ export default function UserProfile({ isAdmin }) {
 
   const handleDeleteArtistClick = async (artistId) => {
     try {
-      const response = await deleteArtistById(artistId, token);
+      const response = await deleteArtistById(artistId, userToken.token);
       if (response.success) {
         const updatedArtists = artists.filter(
           (artist) => artist.id !== artistId
@@ -287,7 +284,7 @@ export default function UserProfile({ isAdmin }) {
     try {
       const response = await createAppointment(
         { ...newAppointment, user_id: profileData.id },
-        token
+        userToken.token
       );
       if (response.success) {
         setUserAppointments([...userAppointments, response.appointment]);
@@ -324,7 +321,7 @@ export default function UserProfile({ isAdmin }) {
     try {
       const response = await updateAppointmentById(
         { id: editingAppointment, ...newAppointment },
-        token
+        userToken.token
       );
       if (response.success) {
         const updatedAppointments = userAppointments.map((appointment) =>
@@ -344,7 +341,7 @@ export default function UserProfile({ isAdmin }) {
 
   const handleDeleteAppointmentClick = async (appointmentId) => {
     try {
-      const response = await deleteAppointmentById(appointmentId, token);
+      const response = await deleteAppointmentById(appointmentId, userToken.token);
       if (response.success) {
         setUserAppointments(
           userAppointments.filter(
@@ -459,6 +456,7 @@ export default function UserProfile({ isAdmin }) {
                 <NavDropdown.Item
                   onClick={() => {
                     localStorage.removeItem("userToken");
+                    logout(); 
                     navigate("/login");
                   }}
                 >

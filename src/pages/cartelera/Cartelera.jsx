@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { getAllServices, createService, updateServiceId, deleteServiceById } from "../../services/serviceCall";
 import { BsFillPencilFill, BsFillTrash3Fill } from "react-icons/bs";
+import { useAuth } from "../../contexts/auth-context/AuthContext"; 
 import "./Cartelera.css";
 
 export default function Cartelera() {
@@ -13,7 +14,7 @@ export default function Cartelera() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const { userToken, logout } = useAuth(); 
   const token = userToken?.token;
   const decoded = userToken?.decoded;
 
@@ -123,7 +124,7 @@ export default function Cartelera() {
                 <NavDropdown.Item as={Link} to="/cartelera">Ver servicios</NavDropdown.Item>
                 {userRole === "super_admin" && <NavDropdown.Item as={Link} to="/admin">Ver usuarios</NavDropdown.Item>}
                 <NavDropdown.Divider />
-                <NavDropdown.Item onClick={() => { localStorage.removeItem("userToken"); navigate("/login"); }}>Cerrar sesión</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => { logout(); navigate("/login"); }}>Cerrar sesión</NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

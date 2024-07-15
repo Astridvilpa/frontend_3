@@ -4,6 +4,9 @@ import "./Register.css";
 import { useState } from "react";
 import { CustomInput } from "../../components/custom_input/CustomInput";
 import { register } from "../../services/apiCall";
+import { useAuth } from "../../contexts/auth-context/AuthContext";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function Register() {
   const [first_name, setFirst_name] = useState("");
@@ -13,6 +16,7 @@ export default function Register() {
   const [registrationErrorMsg, setRegistrationErrorMsg] = useState("");
 
   const navigate = useNavigate();
+  const { logan } = useAuth(); 
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -61,9 +65,17 @@ export default function Register() {
 
     try {
       const res = await register(newUser);
-      if (res !== null && res !== undefined) {
+      if (res && res.token) {
+        const userToken = {
+          token: res.token,
+          decoded: decode(res.token),
+        };
+
+        logan(userToken); 
+
+        setMsg("Registro exitoso");
         setTimeout(() => {
-          navigate("/login");
+          navigate("/profile"); 
         }, 1500);
       } else {
         setRegistrationErrorMsg("Error al registrarse");
@@ -93,30 +105,32 @@ export default function Register() {
       </Navbar>
       <div className="register-container">
         <h2>Registrate</h2>
-        <CustomInput
-          type="text"
-          name="first_name"
-          placeholder="Introduce first name"
-          value={first_name}
-          handler={inputHandler}
-        />
-        <CustomInput
-          type="email"
-          name="email"
-          placeholder="Introduce email"
-          value={email}
-          handler={inputHandler}
-        />
-        <CustomInput
-          type="password"
-          name="password"
-          placeholder="Introduce password"
-          value={password}
-          handler={inputHandler}
-        />
-        <button className="register-btn" onClick={registerHandler}>
-          Enviar
-        </button>
+        <form onSubmit={registerHandler}>
+          <CustomInput
+            type="text"
+            name="first_name"
+            placeholder="Introduce first name"
+            value={first_name}
+            handler={inputHandler}
+          />
+          <CustomInput
+            type="email"
+            name="email"
+            placeholder="Introduce email"
+            value={email}
+            handler={inputHandler}
+          />
+          <CustomInput
+            type="password"
+            name="password"
+            placeholder="Introduce password"
+            value={password}
+            handler={inputHandler}
+          />
+          <button className="register-btn" type="submit">
+            Enviar
+          </button>
+        </form>
         <p className="error-message">{registrationErrorMsg}</p>
         <p>{msg}</p>
       </div>

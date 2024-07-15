@@ -3,17 +3,28 @@ import { Container, Row, Col, Card, Button, Form, Alert } from "react-bootstrap"
 import { getAllAppointments, createAppointment, updateAppointmentById, deleteAppointmentById } from "../../services/appointment";
 import { getAllServices } from "../../services/serviceCall";
 import { getAllArtists } from "../../services/artistCall";
+import { useAuth } from "../../contexts/auth-context/AuthContext"; 
+import { useNavigate } from "react-router-dom";
 import "./Appointments.css";
 
-export default function Appointments({ token, isAdmin }) {
+export default function Appointments({ isAdmin }) {
   const [appointments, setAppointments] = useState([]);
   const [services, setServices] = useState([]);
   const [artists, setArtists] = useState([]);
   const [appointmentForm, setAppointmentForm] = useState({ appointment_date: "", service_id: "", artist_id: "" });
   const [error, setError] = useState(null);
   const [editingAppointment, setEditingAppointment] = useState(null);
+  const navigate = useNavigate();
+  const { userToken } = useAuth(); 
 
   useEffect(() => {
+    if (!userToken) {
+      navigate("/login");
+      return;
+    }
+
+    const token = userToken.token;
+
     const fetchAppointments = async () => {
       try {
         const response = await getAllAppointments(token);
@@ -56,11 +67,11 @@ export default function Appointments({ token, isAdmin }) {
     fetchAppointments();
     fetchServices();
     fetchArtists();
-  }, [token]);
+  }, [userToken, navigate]);
 
   const handleCreateAppointment = async () => {
     try {
-      const response = await createAppointment(appointmentForm, token);
+      const response = await createAppointment(appointmentForm, userToken.token);
       if (response.success) {
         setAppointments([...appointments, response.data]);
         setAppointmentForm({ appointment_date: "", service_id: "", artist_id: "" });
@@ -78,7 +89,7 @@ export default function Appointments({ token, isAdmin }) {
 
   const handleEditAppointmentClick = (appointment) => {
     setEditingAppointment(appointment.id);
-    setAppointmentForm({ 
+    setAppointmentForm({
       appointment_date: appointment.appointment_date,
       service_id: appointment.service_id || "",
       artist_id: appointment.artist_id || ""
@@ -88,7 +99,7 @@ export default function Appointments({ token, isAdmin }) {
   const handleEditAppointmentSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await updateAppointmentById({ id: editingAppointment, ...appointmentForm }, token);
+      const response = await updateAppointmentById({ id: editingAppointment, ...appointmentForm }, userToken.token);
       if (response.success) {
         const updatedAppointments = appointments.map(appointment =>
           appointment.id === editingAppointment ? { ...appointment, ...appointmentForm } : appointment
@@ -105,7 +116,7 @@ export default function Appointments({ token, isAdmin }) {
 
   const handleDeleteAppointmentClick = async (appointmentId) => {
     try {
-      const response = await deleteAppointmentById(appointmentId, token);
+      const response = await deleteAppointmentById(appointmentId, userToken.token);
       if (response.success) {
         setAppointments(appointments.filter(appointment => appointment.id !== appointmentId));
       } else {
