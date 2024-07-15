@@ -23,6 +23,7 @@ export const createAppointment = async (appointmentData, token) => {
 };
 
 export const getUserAppointments = async (userId, token) => {
+  console.log(userId, token)
   const options = {
     method: "GET",
     headers: {

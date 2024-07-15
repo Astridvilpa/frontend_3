@@ -78,7 +78,8 @@ export default function UserProfile({ isAdmin }) {
   useEffect(() => {
     const userToken = JSON.parse(localStorage.getItem("userToken"));
     const token = userToken?.token;
-    const userId = userToken?.userId;
+    const userId = userToken?.decoded.userId;
+    console.log(userToken)
     setToken(token);
 
     if (!token) {
@@ -100,6 +101,7 @@ export default function UserProfile({ isAdmin }) {
           ]);
 
         if (profileRes.success) {
+          console.log("sOY SEBASTIAN",profileRes,appointmentsRes)
           setProfileData(profileRes.data);
           setEmail(profileRes.data.email);
         } else {
